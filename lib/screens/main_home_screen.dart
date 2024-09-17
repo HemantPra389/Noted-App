@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:noted/core/app_colors.dart';
 
 import 'bottom_screens/calendar_screen.dart';
 import 'bottom_screens/home_screen.dart';
@@ -31,14 +32,19 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Noted'),
+        title: const Text('Hello Christina!'),
       ),
-      body: widgetOptions.elementAt(_selectedIndex),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+        child: widgetOptions.elementAt(_selectedIndex),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.amber,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        selectedItemColor: TColors.appPrimaryColor,
         unselectedItemColor: Colors.blueGrey,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
