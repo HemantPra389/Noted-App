@@ -20,6 +20,23 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
     datesGrid = _generateDatesGrid(currentMonth);
   }
 
+  String _monthName(int monthNumber) {
+    return [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ][monthNumber - 1];
+  }
+
   List<DateTime> _generateDatesGrid(DateTime month) {
     int numDays = DateTime(month.year, month.month + 1, 0).day;
     int firstWeekday = DateTime(month.year, month.month, 1).weekday % 7;
@@ -57,44 +74,55 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () => _changeMonth(-1),
-            ),
-            Text(
-              '${_monthName(currentMonth.month)} ${currentMonth.year}',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: () => _changeMonth(1),
-            ),
-          ],
-        ),
-        const Gap(12),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-                7,
-                (index) => Text(
-                      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][index],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: Colors.blueGrey),
-                    )),
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () => _changeMonth(-1),
+              ),
+              Text(
+                '${_monthName(currentMonth.month)} ${currentMonth.year}',
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward_ios),
+                onPressed: () => _changeMonth(1),
+              ),
+            ],
           ),
-        ),
-        const Gap(12),
-        Flexible(
-          child: GridView.builder(
+          const Gap(12),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(
+                  7,
+                  (index) => Text(
+                        [
+                          'Sun',
+                          'Mon',
+                          'Tue',
+                          'Wed',
+                          'Thu',
+                          'Fri',
+                          'Sat'
+                        ][index],
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Colors.blueGrey),
+                      )),
+            ),
+          ),
+          const Gap(12),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7),
             itemCount: datesGrid.length,
@@ -119,25 +147,75 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
               );
             },
           ),
-        ),
-      ],
+          const Divider(),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: 5,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => Container(
+              margin: const EdgeInsets.all(6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              decoration: BoxDecoration(
+                  border: Border.all(),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Colors.black,
+                        offset: Offset(1.5, 2),
+                        spreadRadius: 2,
+                        blurStyle: BlurStyle.solid)
+                  ]),
+              child: const Column(
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                          backgroundColor: Colors.redAccent, radius: 8),
+                      Gap(8),
+                      Text("personal")
+                    ],
+                  ),
+                  Gap(8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Buy cat food",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
+                      Icon(Icons.flag, color: Colors.redAccent)
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_month_rounded,
+                        color: Colors.black54,
+                      ),
+                      Gap(8),
+                      Text("17/03/2023")
+                    ],
+                  ),
+                  Gap(4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.timelapse_rounded,
+                        color: Colors.black54,
+                      ),
+                      Gap(8),
+                      Text("14 : 20")
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
-  }
-
-  String _monthName(int monthNumber) {
-    return [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ][monthNumber - 1];
   }
 }

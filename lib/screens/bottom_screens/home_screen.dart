@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
-  List<Widget> _body = [MonthlyScreen(), DailyScreen()];
+  List<Widget> _body = [const MonthlyScreen(), const DailyScreen()];
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.only(top: 12),
               child: TabBarView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
