@@ -12,7 +12,7 @@ class MainHomeScreen extends StatefulWidget {
 }
 
 class _MainHomeScreenState extends State<MainHomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
 
   final List<Widget> widgetOptions = const [
     HomeScreen(),
@@ -31,7 +31,10 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         title: const Text('Hello Christina!'),
       ),
       body: Padding(
