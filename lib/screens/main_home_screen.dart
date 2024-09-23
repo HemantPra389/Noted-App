@@ -12,7 +12,7 @@ class MainHomeScreen extends StatefulWidget {
 }
 
 class _MainHomeScreenState extends State<MainHomeScreen> {
-  int _selectedIndex = 4;
+  int _selectedIndex = 3;
 
   final List<Widget> widgetOptions = const [
     HomeScreen(),
