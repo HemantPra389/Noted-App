@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:noted/core/app_colors.dart';
-
-import 'bottom_screens/calendar_screen.dart';
+import 'package:noted/widgets/todo_form_widget.dart';
 import 'bottom_screens/home_screen.dart';
 import 'bottom_screens/profile_screen.dart';
 import 'bottom_screens/setting_screen.dart';
@@ -12,12 +11,10 @@ class MainHomeScreen extends StatefulWidget {
 }
 
 class _MainHomeScreenState extends State<MainHomeScreen> {
-  int _selectedIndex = 3;
+  int _selectedIndex = 0;
 
   final List<Widget> widgetOptions = const [
     HomeScreen(),
-    CalendarScreen(),
-    Center(child: Text('Add Habit', style: TextStyle(fontSize: 24))),
     ProfileScreen(),
     SettingsScreen(),
   ];
@@ -56,14 +53,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add Habit',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -75,6 +64,16 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: TColors.appPrimaryColor,
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return TodoFormWidget();
+                });
+          },
+          child: const Icon(Icons.add)),
     );
   }
 }

@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
-  List<Widget> _body = [const MonthlyScreen(), const DailyScreen()];
+  final List<Widget> _body = [const MonthlyScreen(), const DailyScreen()];
 
   @override
   void initState() {
