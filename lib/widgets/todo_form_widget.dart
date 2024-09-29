@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:noted/core/app_colors.dart';
 
 class TodoFormWidget extends StatefulWidget {
+  const TodoFormWidget({super.key});
+
   @override
   _TodoFormWidgetState createState() => _TodoFormWidgetState();
 }
