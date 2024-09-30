@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:noted/core/app_colors.dart';
+import 'package:noted/providers/todo_handler_provider.dart';
 import 'package:noted/screens/home/daily_screen.dart';
 import 'package:noted/screens/home/monthly_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,7 +14,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
-  final List<Widget> _body = [const MonthlyScreen(), const DailyScreen()];
+  final List<Widget> _body = [
+    ChangeNotifierProvider(
+        create: (context) => TodoHandlerProvider(), child: MonthlyScreen()),
+    const DailyScreen()
+  ];
 
   @override
   void initState() {

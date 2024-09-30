@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:noted/core/app_colors.dart';
+import 'package:noted/providers/todo_handler_provider.dart';
+import 'package:provider/provider.dart';
 
 class MonthlyScreen extends StatefulWidget {
   const MonthlyScreen({super.key});
@@ -70,6 +74,14 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
       currentMonth = DateTime(currentMonth.year, currentMonth.month + offset);
       datesGrid = _generateDatesGrid(currentMonth);
     });
+  }
+
+  String formatDateTimeToString(DateTime dateTime) {
+    return '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
+  }
+
+  String formatTimeFromDateTime(DateTime dateTime) {
+    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -148,71 +160,79 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
             },
           ),
           const Divider(),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: 5,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => Container(
-              margin: const EdgeInsets.all(6),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-              decoration: BoxDecoration(
-                  border: Border.all(),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Colors.black,
-                        offset: Offset(1.5, 2),
-                        spreadRadius: 2,
-                        blurStyle: BlurStyle.solid)
-                  ]),
-              child: const Column(
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                          backgroundColor: Colors.redAccent, radius: 8),
-                      Gap(8),
-                      Text("personal")
-                    ],
-                  ),
-                  Gap(8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Buy cat food",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
+          Consumer<TodoHandlerProvider>(
+            builder: (context, handler, child) {
+              log("Rebuilding");
+              return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: handler.todos.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final todo = handler.todos[index];
+                    return Container(
+                      margin: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 16),
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black,
+                                offset: Offset(1.5, 2),
+                                spreadRadius: 2,
+                                blurStyle: BlurStyle.solid)
+                          ]),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor: Colors.redAccent, radius: 8),
+                              Gap(8),
+                              Text(todo.category)
+                            ],
+                          ),
+                          Gap(8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                todo.title,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              Icon(Icons.flag, color: Colors.redAccent)
+                            ],
+                          ),
+                          Divider(),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month_rounded,
+                                color: Colors.black54,
+                              ),
+                              Gap(8),
+                              Text(formatDateTimeToString(todo.createdAt))
+                            ],
+                          ),
+                          Gap(4),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.timelapse_rounded,
+                                color: Colors.black54,
+                              ),
+                              Gap(8),
+                              Text(formatTimeFromDateTime(todo.reminderTime))
+                            ],
+                          ),
+                        ],
                       ),
-                      Icon(Icons.flag, color: Colors.redAccent)
-                    ],
-                  ),
-                  Divider(),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_month_rounded,
-                        color: Colors.black54,
-                      ),
-                      Gap(8),
-                      Text("17/03/2023")
-                    ],
-                  ),
-                  Gap(4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.timelapse_rounded,
-                        color: Colors.black54,
-                      ),
-                      Gap(8),
-                      Text("14 : 20")
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                    );
+                  });
+            },
           )
         ],
       ),

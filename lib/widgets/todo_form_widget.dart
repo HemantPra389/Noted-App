@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:noted/core/app_colors.dart';
+import 'package:noted/models/category_model.dart';
+import 'package:noted/models/todo_model.dart';
+import 'package:noted/providers/todo_handler_provider.dart';
+import 'package:provider/provider.dart';
 
 class TodoFormWidget extends StatefulWidget {
   const TodoFormWidget({super.key});
@@ -10,13 +14,19 @@ class TodoFormWidget extends StatefulWidget {
 
 class _TodoFormWidgetState extends State<TodoFormWidget> {
   final _formKey = GlobalKey<FormState>();
+  String? _title;
   String? _category;
   TimeOfDay? _reminderTime;
   String? _newCategory;
   final List<String> _categories = ['Personal', 'Work', 'Other'];
+  DateTime convertTimeOfDayToDateTime(TimeOfDay timeOfDay, DateTime date) {
+    return DateTime(
+        date.year, date.month, date.day, timeOfDay.hour, timeOfDay.minute);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final todoHandler = Provider.of<TodoHandlerProvider>(context);
     return Dialog(
       child: SingleChildScrollView(
         child: Container(
@@ -39,9 +49,13 @@ class _TodoFormWidgetState extends State<TodoFormWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Align(
+                Align(
                   alignment: Alignment.topRight,
-                  child: CloseButton(),
+                  child: CloseButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
                 ),
                 const Center(
                   child: Text(
@@ -105,7 +119,9 @@ class _TodoFormWidgetState extends State<TodoFormWidget> {
                       fillColor: Colors.grey[200],
                     ),
                     onChanged: (value) {
-                      _newCategory = value;
+                      setState(() {
+                        _newCategory = value;
+                      });
                     },
                     validator: (value) =>
                         value!.isEmpty ? 'Please enter a category' : null,
@@ -128,7 +144,11 @@ class _TodoFormWidgetState extends State<TodoFormWidget> {
                     filled: true,
                     fillColor: Colors.grey[200],
                   ),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      _title = value;
+                    });
+                  },
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter a task title' : null,
                 ),
@@ -179,10 +199,23 @@ class _TodoFormWidgetState extends State<TodoFormWidget> {
                         if (_category == 'Other' &&
                             _newCategory != null &&
                             _newCategory!.isNotEmpty) {
-                          _categories.add(_newCategory!);
+                          todoHandler.saveCategory(
+                              categoryModel: CategoryModel(
+                                  title: _newCategory!,
+                                  createdAt: DateTime.now()));
+                          // _categories.add(_newCategory!);
                           _category = _newCategory;
                         }
-                        Navigator.of(context).pop();
+                        todoHandler
+                            .saveTask(
+                                todoModel: TodoModel(
+                                    title: _title!,
+                                    category: _category!,
+                                    isCompleted: false,
+                                    reminderTime: convertTimeOfDayToDateTime(
+                                        _reminderTime!, DateTime.now()),
+                                    createdAt: DateTime.now()))
+                            .whenComplete(() => Navigator.of(context).pop());
                       }
                     },
                     style: ButtonStyle(

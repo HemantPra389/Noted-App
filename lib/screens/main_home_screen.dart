@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:noted/core/app_colors.dart';
+import 'package:noted/providers/todo_handler_provider.dart';
 import 'package:noted/widgets/todo_form_widget.dart';
+import 'package:provider/provider.dart';
 import 'bottom_screens/home_screen.dart';
 import 'bottom_screens/profile_screen.dart';
 import 'bottom_screens/setting_screen.dart';
@@ -13,7 +15,7 @@ class MainHomeScreen extends StatefulWidget {
 class _MainHomeScreenState extends State<MainHomeScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> widgetOptions = const [
+  final List<Widget> widgetOptions = [
     HomeScreen(),
     ProfileScreen(),
     SettingsScreen(),
@@ -69,8 +71,10 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           onPressed: () {
             showDialog(
                 context: context,
-                builder: (context) {
-                  return TodoFormWidget();
+                builder: (ctx) {
+                  return ChangeNotifierProvider(
+                      create: (context) => TodoHandlerProvider(),
+                      child: TodoFormWidget());
                 });
           },
           child: const Icon(Icons.add)),
