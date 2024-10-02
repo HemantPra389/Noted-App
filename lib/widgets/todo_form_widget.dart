@@ -203,15 +203,17 @@ class _TodoFormWidgetState extends State<TodoFormWidget> {
                               categoryModel: CategoryModel(
                                   title: _newCategory!,
                                   createdAt: DateTime.now()));
-                          // _categories.add(_newCategory!);
-                          _category = _newCategory;
+                          setState(() {
+                            _categories.add(_newCategory!);
+                            _category = _newCategory;
+                          });
                         }
                         todoHandler
                             .saveTask(
                                 todoModel: TodoModel(
                                     title: _title!,
                                     category: _category!,
-                                    isCompleted: false,
+                                    isCompleted: true,
                                     reminderTime: convertTimeOfDayToDateTime(
                                         _reminderTime!, DateTime.now()),
                                     createdAt: DateTime.now()))

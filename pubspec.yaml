@@ -34,6 +34,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_local_notifications: ^17.2.2
+  fluttertoast: ^8.2.8
   gap: ^3.0.1
   hive_flutter: ^1.1.0
   hive_generator: ^2.0.1
