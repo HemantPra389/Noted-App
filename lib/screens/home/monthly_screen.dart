@@ -204,16 +204,17 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       final todo = data.elementAt(index);
+                      bool isCompleted = box.any((element) =>
+                          element.title == todo.title &&
+                          element.category == todo.category &&
+                          element.reminderTime == todo.reminderTime);
                       return Container(
                         margin: const EdgeInsets.all(6),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 16),
                         decoration: BoxDecoration(
                             border: Border.all(),
-                            color: box.any((element) =>
-                                    element.title == todo.title &&
-                                    element.category == todo.category &&
-                                    element.reminderTime == todo.reminderTime)
+                            color: isCompleted
                                 ? TColors.appPrimaryColor
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(8),
@@ -260,8 +261,7 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
                                       break;
                                   }
                                 }, optionsList: [
-                                  if (box.contains(todo))
-                                    {"complete": "Complete"},
+                                  if (!isCompleted) {"complete": "Complete"},
                                   {"delete": "Delete"}
                                 ])
                               ],
