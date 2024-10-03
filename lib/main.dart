@@ -25,6 +25,7 @@ Future<void> openHiveBoxes() async {
   Hive.registerAdapter(CategoryModelAdapter());
   await Hive.openBox<CategoryModel>(HiveConstants.categoryBox);
   await Hive.openBox<TodoModel>(HiveConstants.todoBox);
+  await Hive.openBox<TodoModel>(HiveConstants.todoReportBox);
 }
 
 class MyApp extends StatelessWidget {

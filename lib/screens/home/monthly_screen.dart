@@ -5,6 +5,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:noted/core/app_colors.dart';
 import 'package:noted/core/hive_constants.dart';
 import 'package:noted/models/todo_model.dart';
+import 'package:noted/providers/todo_handler_provider.dart';
+import 'package:noted/widgets/popup_menu_helper.dart';
+import 'package:provider/provider.dart';
 
 class MonthlyScreen extends StatefulWidget {
   const MonthlyScreen({super.key});
@@ -97,91 +100,105 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
-        child: ValueListenableBuilder(
-          valueListenable:
-              Hive.box<TodoModel>(HiveConstants.todoBox).listenable(),
-          builder: (context, box, child) {
-            final data = box.values.where(
-                (element) => element.createdAt.month == currentMonth.month);
-            return Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () => _changeMonth(-1),
-                    ),
-                    Text(
-                      '${_monthName(currentMonth.month)} ${currentMonth.year}',
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.w500),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.arrow_forward_ios),
-                      onPressed: () => _changeMonth(1),
-                    ),
-                  ],
-                ),
-                const Gap(12),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                        7,
-                        (index) => Text(
-                              [
-                                'Sun',
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat'
-                              ][index],
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  color: Colors.blueGrey),
-                            )),
-                  ),
-                ),
-                const Gap(12),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7),
-                  itemCount: datesGrid.length,
-                  itemBuilder: (context, index) {
-                    DateTime date = datesGrid[index];
-                    bool isCurrentMonth = date.month == currentMonth.month;
-                    bool isCompleted = areAllTasksCompletedForDate(box, date);
-                    return Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: CircleAvatar(
-                        backgroundColor: isCompleted
-                            ? TColors.appPrimaryColor
-                            : Colors.transparent,
-                        child: Text(
-                          date.day.toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: isCompleted
-                                ? Colors.white
-                                : isCurrentMonth
-                                    ? Colors.black
-                                    : Colors.grey,
+        child: Column(
+          children: [
+            ValueListenableBuilder(
+                valueListenable:
+                    Hive.box<TodoModel>(HiveConstants.todoReportBox)
+                        .listenable(),
+                builder: (context, box, child) {
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back_ios),
+                            onPressed: () => _changeMonth(-1),
                           ),
+                          Text(
+                            '${_monthName(currentMonth.month)} ${currentMonth.year}',
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w500),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_forward_ios),
+                            onPressed: () => _changeMonth(1),
+                          ),
+                        ],
+                      ),
+                      const Gap(12),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(
+                              7,
+                              (index) => Text(
+                                    [
+                                      'Sun',
+                                      'Mon',
+                                      'Tue',
+                                      'Wed',
+                                      'Thu',
+                                      'Fri',
+                                      'Sat'
+                                    ][index],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                        color: Colors.blueGrey),
+                                  )),
                         ),
                       ),
-                    );
-                  },
-                ),
-                const Divider(),
-                ListView.builder(
+                      const Gap(12),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 7),
+                        itemCount: datesGrid.length,
+                        itemBuilder: (context, index) {
+                          DateTime date = datesGrid[index];
+                          bool isCurrentMonth =
+                              date.month == currentMonth.month;
+                          bool isCompleted =
+                              areAllTasksCompletedForDate(box, date);
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: CircleAvatar(
+                              backgroundColor: isCompleted
+                                  ? TColors.appPrimaryColor
+                                  : Colors.transparent,
+                              child: Text(
+                                date.day.toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: isCompleted
+                                      ? Colors.white
+                                      : isCurrentMonth
+                                          ? Colors.black
+                                          : Colors.grey,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                }),
+            const Divider(),
+            ValueListenableBuilder(
+              valueListenable:
+                  Hive.box<TodoModel>(HiveConstants.todoBox).listenable(),
+              builder: (context, value, child) {
+                var data = value.values;
+                var box =
+                    Hive.box<TodoModel>(HiveConstants.todoReportBox).values;
+                return ListView.builder(
                     shrinkWrap: true,
                     itemCount: data.length,
                     physics: const NeverScrollableScrollPhysics(),
@@ -193,7 +210,12 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
                             horizontal: 12, vertical: 16),
                         decoration: BoxDecoration(
                             border: Border.all(),
-                            color: Colors.white,
+                            color: box.any((element) =>
+                                    element.title == todo.title &&
+                                    element.category == todo.category &&
+                                    element.reminderTime == todo.reminderTime)
+                                ? TColors.appPrimaryColor
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: const [
                               BoxShadow(
@@ -212,13 +234,36 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
                                 const Gap(8),
                                 Text(todo.category),
                                 Spacer(),
-                                GestureDetector(
-                                    onTap: () {
-                                      Fluttertoast.showToast(
-                                          msg: "Long Press !!");
-                                    },
-                                    onLongPress: () {},
-                                    child: Icon(Icons.fingerprint_rounded))
+                                PopupMenuHelper.buildPopupMenu(context,
+                                    onSelected: (value) async {
+                                  switch (value) {
+                                    case "complete":
+                                      await Provider.of<TodoHandlerProvider>(
+                                              context,
+                                              listen: false)
+                                          .completeTask(
+                                              todoModel: TodoModel(
+                                                  title: todo.title,
+                                                  category: todo.category,
+                                                  isCompleted: true,
+                                                  reminderTime:
+                                                      todo.reminderTime,
+                                                  createdAt: DateTime.now()));
+                                      break;
+                                    case "delete":
+                                      await Provider.of<TodoHandlerProvider>(
+                                              context,
+                                              listen: false)
+                                          .deleteTask(index);
+                                      break;
+                                    default:
+                                      break;
+                                  }
+                                }, optionsList: [
+                                  if (box.contains(todo))
+                                    {"complete": "Complete"},
+                                  {"delete": "Delete"}
+                                ])
                               ],
                             ),
                             const Gap(8),
@@ -259,10 +304,10 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
                           ],
                         ),
                       );
-                    })
-              ],
-            );
-          },
+                    });
+              },
+            )
+          ],
         ));
   }
 }
