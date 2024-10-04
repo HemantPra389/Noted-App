@@ -12,16 +12,16 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  
+  int _selectedIndex = 0;
+
   final List<Color> colors = [
     Colors.orangeAccent,
     Colors.blueAccent,
     Colors.greenAccent,
     Colors.redAccent,
-    Colors.purpleAccent,
+    Colors.purpleAccent
   ];
 
-  
   final List<String> categories = [
     'Work',
     'Personal',
@@ -33,7 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'Hobby'
   ];
 
-  // Define a list of task counts
   final List<int> taskCounts =
       List.generate(8, (index) => Random().nextInt(30) + 1);
 
@@ -46,25 +45,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: List.generate(
               3,
               (index) => Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 6),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: [
-                            if (index == 1)
-                              const BoxShadow(
-                                  color: Colors.black,
-                                  offset: Offset(1.5, 1.8),
-                                  spreadRadius: 2,
-                                  blurStyle: BlurStyle.solid)
-                          ],
-                          color: index == 1
-                              ? TColors.appPrimaryColor
-                              : Colors.white),
-                      child: Text(titlesList[index]),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(6),
+                            boxShadow: [
+                              if (index == _selectedIndex)
+                                const BoxShadow(
+                                    color: Colors.black,
+                                    offset: Offset(1.5, 1.8),
+                                    spreadRadius: 2,
+                                    blurStyle: BlurStyle.solid)
+                            ],
+                            color: index == _selectedIndex
+                                ? TColors.appPrimaryColor
+                                : Colors.white),
+                        child: Text(titlesList[index]),
+                      ),
                     ),
                   )),
         ),
@@ -73,17 +79,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {},
-            ),
+                icon: const Icon(Icons.arrow_back_ios), onPressed: () {}),
             const Text(
               'This Week',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
             IconButton(
-              icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: () {},
-            ),
+                icon: const Icon(Icons.arrow_forward_ios), onPressed: () {}),
           ],
         ),
         const SizedBox(height: 12),
@@ -101,6 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 startDate: DateTime.now().subtract(const Duration(days: 4)),
                 endDate: DateTime.now())),
         const SizedBox(height: 12),
+        Divider(),
         const Text(
           'Category analytics',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),

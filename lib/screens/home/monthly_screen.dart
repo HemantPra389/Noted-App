@@ -16,7 +16,8 @@ class MonthlyScreen extends StatefulWidget {
   State<MonthlyScreen> createState() => _MonthlyScreenState();
 }
 
-class _MonthlyScreenState extends State<MonthlyScreen> {
+class _MonthlyScreenState extends State<MonthlyScreen>
+    with AutomaticKeepAliveClientMixin {
   late DateTime currentMonth;
   late List<DateTime> datesGrid;
 
@@ -98,6 +99,7 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
@@ -310,4 +312,7 @@ class _MonthlyScreenState extends State<MonthlyScreen> {
           ],
         ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
